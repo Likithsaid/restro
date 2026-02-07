@@ -14,7 +14,10 @@
 <div id="orderContainer"></div>
 
 <script>
-const order = JSON.parse(localStorage.getItem("latestOrder"));
+const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+const orderId = localStorage.getItem("latestOrderId");
+
+const order = orders.find(o => o.orderId === orderId);
 
 if (!order) {
     document.getElementById("orderContainer").innerHTML = `
@@ -40,16 +43,30 @@ if (!order) {
         `;
     });
 
+    let statusBadge = "";
+    if (order.status === "confirmed") {
+        statusBadge = `<span class="badge bg-success">CONFIRMED</span>`;
+    } else if (order.status === "rejected") {
+        statusBadge = `<span class="badge bg-danger">REJECTED</span>`;
+    } else {
+        statusBadge = `<span class="badge bg-warning text-dark">PENDING</span>`;
+    }
+
     document.getElementById("orderContainer").innerHTML = `
         <div class="card mb-4">
             <div class="card-header bg-warning text-dark">
-                <h4 class="mb-0">⏳ Order Submitted</h4>
+                <h4 class="mb-0">Order Information</h4>
             </div>
             <div class="card-body">
                 <p><strong>Order ID:</strong> ${order.orderId}</p>
                 <p><strong>Customer:</strong> ${order.customer.firstName} ${order.customer.lastName}</p>
                 <p><strong>Order Time:</strong> ${order.orderTime}</p>
-                <p><strong>Status:</strong> Pending (Waiting for confirmation)</p>
+                <p><strong>Status:</strong> ${statusBadge}</p>
+                ${
+                    order.status === "confirmed"
+                    ? `<p><strong>Waiting Time:</strong> ${order.waitingTime}</p>`
+                    : ""
+                }
             </div>
         </div>
 
@@ -71,34 +88,7 @@ if (!order) {
         </div>
     `;
 }
-
-const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-const orderId = localStorage.getItem("latestOrderId");
-
-const order = orders.find(o => o.orderId === orderId);
-
-if (!order) {
-    document.body.innerHTML = "<h3>No order found</h3>";
-} else {
-    document.body.innerHTML = `
-        <h3>Order Status</h3>
-        <p><strong>Order ID:</strong> ${order.orderId}</p>
-        <p><strong>Status:</strong> ${order.status.toUpperCase()}</p>
-        ${
-            order.status === "confirmed"
-            ? `<p><strong>Waiting Time:</strong> ${order.waitingTime}</p>`
-            : ""
-        }
-        <p><strong>Order Time:</strong> ${order.orderTime}</p>
-    `;
-}
 </script>
-
-  
-
-
-
 
 </body>
 </html>
-
