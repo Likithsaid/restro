@@ -43,19 +43,17 @@ if (!order) {
         `;
     });
 
-    let statusBadge = "";
-    if (order.status === "confirmed") {
-        statusBadge = `<span class="badge bg-success">CONFIRMED</span>`;
-    } else if (order.status === "rejected") {
-        statusBadge = `<span class="badge bg-danger">REJECTED</span>`;
-    } else {
-        statusBadge = `<span class="badge bg-warning text-dark">PENDING</span>`;
-    }
+    const statusBadge =
+        order.status === "confirmed"
+            ? `<span class="badge bg-success">CONFIRMED</span>`
+            : order.status === "rejected"
+            ? `<span class="badge bg-danger">REJECTED</span>`
+            : `<span class="badge bg-warning text-dark">PENDING</span>`;
 
     document.getElementById("orderContainer").innerHTML = `
         <div class="card mb-4">
             <div class="card-header bg-warning text-dark">
-                <h4 class="mb-0">Order Information</h4>
+                <h4>Order Information</h4>
             </div>
             <div class="card-body">
                 <p><strong>Order ID:</strong> ${order.orderId}</p>
@@ -64,8 +62,8 @@ if (!order) {
                 <p><strong>Status:</strong> ${statusBadge}</p>
                 ${
                     order.status === "confirmed"
-                    ? `<p><strong>Waiting Time:</strong> ${order.waitingTime}</p>`
-                    : ""
+                        ? `<p><strong>Waiting Time:</strong> ${order.waitingTime}</p>`
+                        : ""
                 }
             </div>
         </div>
